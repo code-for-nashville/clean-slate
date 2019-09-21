@@ -7,7 +7,7 @@ clean-slate
 <meta charset="utf-8">
 <style>a,body{color:#222}body{font:18px "Helvetica Neue",Helvetica,Arial,sans-serif}#passage{max-width:38em;margin:0 auto;line-height:145%}a{text-decoration:none;border-bottom:2px solid #bbb}a:hover{color:#cc8929;border-color:#cc8929}a:active{color:#ffb040;border-color:#ffb040}tw-storydata{display:none}@media screen and (max-device-width:480px){#passage{font-size:70%}}</style>
 <style>
-    header{max-width:38em;margin:0 auto;line-height:145%}
+    header,#old{max-width:38em;margin:0 auto;line-height:145%}
 
 </style>
 </head>
@@ -17,7 +17,7 @@ clean-slate
     <h3>Clean Slate Expungement Tool</h3>
     <hr>
 </header>
-
+<div id="old"></div>
 <div id="passage"></div>
 
 <tw-storydata name="clean-slate" startnode="1" creator="Twine" creator-version="2.3.3" ifid="401BDA8E-C23E-4648-A697-104DFD937821" zoom="1" format="Snowman" format-version="1.3.0" options="" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css"></style><script role="script" id="twine-user-script" type="text/twine-javascript"></script><tw-passagedata pid="1" name="Starting to ask the questions" tags="" position="668,261" size="100,100">Have you been conviceted or pled guilt for a felony?
@@ -134,6 +134,20 @@ var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length
 "use strict";var $=require("jquery"),_=require("underscore"),LZString=require("lz-string"),Story=function(t){this.el=t,this.name=t.attr("name"),this.startPassage=parseInt(t.attr("startnode")),this.creator=t.attr("creator"),this.creatorVersion=t.attr("creator-version"),this.history=[],this.state={},this.checkpointName="",this.ignoreErrors=!1,this.errorMessage="⚠ %s",this.atCheckpoint=!1,this.passages=[];var e=this.passages;t.children("tw-passagedata").each(function(t){var s=$(this),i=parseInt(s.attr("pid")),r=s.attr("tags");e[i]=new Passage(i,s.attr("name"),""!==r&&void 0!==r?r.split(" "):[],s.html())}),this.userScripts=_.map(t.children('*[type="text/twine-javascript"]'),function(t){return $(t).html()}),this.userStyles=_.map(t.children('*[type="text/twine-css"]'),function(t){return $(t).html()})};_.extend(Story.prototype,{start:function(){$(window).on("popstate",function(t){var e=t.originalEvent.state;e?(this.state=e.state,this.history=e.history,this.checkpointName=e.checkpointName,this.show(this.history[this.history.length-1],!0)):this.history.length>1&&(this.state={},this.history=[],this.checkpointName="",this.show(this.startPassage,!0))}.bind(this)),$("body").on("click","a[data-passage]",function(t){this.show(_.unescape($(t.target).closest("[data-passage]").attr("data-passage")))}.bind(this)),$(window).on("hashchange",function(){this.restore(window.location.hash.replace("#",""))}.bind(this)),window.onerror=function(t,e,s){this.errorMessage&&"string"==typeof this.errorMessage||(this.errorMessage=Story.prototype.errorMessage),this.ignoreErrors||(e&&(t+=" ("+e,s&&(t+=": "+s),t+=")"),$("#passage").html(this.errorMessage.replace("%s",t)))}.bind(this),_.each(this.userStyles,function(t){$("body").append("<style>"+t+"</style>")}),_.each(this.userScripts,function(script){eval(script)}),$.event.trigger("startstory",{story:this}),""!==window.location.hash&&this.restore(window.location.hash.replace("#",""))||(this.show(this.startPassage),this.atCheckpoint=!0)},passage:function(t){return _.isNumber(t)?this.passages[t]:_.isString(t)?_.findWhere(this.passages,{name:t}):void 0},show:function(t,e){var s=this.passage(t);if(!s)throw new Error('There is no passage with the ID or name "'+t+'"');if($.event.trigger("hidepassage",{passage:window.passage}),$.event.trigger("showpassage",{passage:s}),!e){this.history.push(s.id);try{this.atCheckpoint?window.history.pushState({state:this.state,history:this.history,checkpointName:this.checkpointName},"",""):window.history.replaceState({state:this.state,history:this.history,checkpointName:this.checkpointName},"","")}catch(i){$.event.trigger("checkpointfailed",{error:i})}}window.passage=s,this.atCheckpoint=!1,$("#passage").html(s.render()),$.event.trigger("showpassage:after",{passage:s})},render:function(t){var e=this.passage(t);if(!e)throw new Error("There is no passage with the ID or name "+t);return e.render()},checkpoint:function(t){void 0!==t?(document.title=this.name+": "+t,this.checkpointName=t):this.checkpointName="",this.atCheckpoint=!0,$.event.trigger("checkpoint",{name:t})},saveHash:function(){return LZString.compressToBase64(JSON.stringify({state:this.state,history:this.history,checkpointName:this.checkpointName}))},save:function(){$.event.trigger("save"),window.location.hash=this.saveHash()},restore:function(t){$.event.trigger("restore");try{var e=JSON.parse(LZString.decompressFromBase64(t));this.state=e.state,this.history=e.history,this.checkpointName=e.checkpointName,this.show(this.history[this.history.length-1],!0)}catch(s){return $.event.trigger("restorefailed",{error:s}),!1}return $.event.trigger("restore:after"),!0}}),module.exports=Story;
 
 },{"jquery":1,"lz-string":2,"underscore":4}]},{},[5]);
+</script>
+<script>
+        $(document).on('showpassage:after', function (eventObject, passage) {
+        
+        $('#old').html("");
+        let history_ids = _.initial(window.story.history);
+        for (i of history_ids) {
+            $('#old').append(window.story.render(i));
+            $('#old').append("<hr/>");
+        }
+        
+
+});
+
 </script>
 </body>
 </html>
