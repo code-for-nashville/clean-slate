@@ -1,0 +1,12 @@
+
+/* this is the main css page feel free to add css here*/
+body{
+    background-color: #fff7ad;
+}
+.bar {
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+}
+footer {
+    background-color: #404040;
+}
